@@ -34,6 +34,7 @@ public class Tugas05_server {
             Socket sock = servsock.accept();
             byte[] mybytearray = new byte[(int) myFile.length()];
             
+            // file attribut
             Path file = Paths.get("s.pdf");
             BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
 
