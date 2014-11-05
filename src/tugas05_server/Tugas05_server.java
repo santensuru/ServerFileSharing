@@ -10,15 +10,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Date;
 
 /**
  *
@@ -30,6 +27,7 @@ public class Tugas05_server {
     
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
@@ -48,7 +46,7 @@ public class Tugas05_server {
     }
     
     private static class ClientHandling extends Thread {
-        private Socket connection;
+        private final Socket connection;
         
         ClientHandling(Socket connection) {
             this.connection = connection;
