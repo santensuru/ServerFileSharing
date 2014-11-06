@@ -27,8 +27,7 @@ import java.util.ArrayList;
 public class Tugas05_server {
 
     public final static int PORT = 6060;
-    public final static ArrayList<Socket> allConnection = new ArrayList<Socket>();
-    public static String status = "";
+    public final static ArrayList<Pair<Socket, String>> allConnection = new ArrayList<Pair<Socket, String>>();
     private static byte[] mybytearray = new byte[1024];
     private static int bytesRead = 0;
     
@@ -41,8 +40,9 @@ public class Tugas05_server {
         try (ServerSocket server = new ServerSocket(PORT)) {
             while (true) {
                 try {
+                    int i = 0;
                     Socket connection = server.accept();
-                    allConnection.add(connection);
+                    allConnection.add(new Pair<Socket, String>(connection, ""));
                     Thread task = new ClientHandling(connection);
                     task.start();
                 }
@@ -66,8 +66,8 @@ public class Tugas05_server {
         private String terima = "";
         private int buf;
         private String command = "";
-        private ArrayList<Socket> destination = new ArrayList<Socket>();
-        private String[] activeDest;
+        private ArrayList<Pair<Socket, String>> destination = new ArrayList<Pair<Socket, String>>();
+//        private String[] activeDest;
         
         ClientHandling(Socket connection) throws IOException {
             this.connection = connection;
@@ -96,7 +96,8 @@ public class Tugas05_server {
                     } while(!terima.contains("\r\n") || buf == 1024);
                     if (terima.contains("who")) {
                         kirim = "2 oke,\r\n";
-                        for(Socket s: allConnection) {
+                        for(Pair a: allConnection) {
+                            Socket s = (Socket) a.getLeft();
                             kirim = kirim.concat("\t" + s.getRemoteSocketAddress().toString() + "\r\n");
                         }
                     }
@@ -106,94 +107,161 @@ public class Tugas05_server {
                     else if (terima.contains("/")) {
 //                        System.out.println(terima);
                         
-                        activeDest = terima.split(";");
-                        for(String a: activeDest) {
+//                        activeDest = terima.split(";");
+//                        for(String a: activeDest) {
 //                            System.out.println(a);
-                            for(Socket s: allConnection) {
+                            for(Pair a: allConnection) {
+                                Socket s = (Socket) a.getLeft();
 //                                System.out.println(a.contains(s.getRemoteSocketAddress().toString()));
-                                if (a.contains(s.getRemoteSocketAddress().toString())) {
-                                    destination.add(s);
+                                if (terima.contains(s.getRemoteSocketAddress().toString())) {
+                                    Pair<Socket, String> pair = new Pair<Socket, String>(s, "false");
+                                    destination.add(pair);
 //                                    System.out.println(s.getRemoteSocketAddress());
                                 }
                             }
-                        }
+//                        }
                         
                         kirim = "";
-                        for(Socket s: destination) {
+                        for(Pair p: destination) {
+                            Socket s = (Socket) p.getLeft();
                             String ckirim = "";
-                            String cterima = "";
-                            InputStream cis = s.getInputStream();
+//                            String cterima = "";
+//                            InputStream cis = s.getInputStream();
                             OutputStream cos = s.getOutputStream();
                             BufferedOutputStream cbos = new BufferedOutputStream(cos);
                             ckirim = "request send from /ip:port" + this.connection.getRemoteSocketAddress().toString() + ", accept?\r\n";
                             cbos.write(ckirim.getBytes());
                             cbos.flush();
+                            int  l = allConnection.indexOf(new Pair<Socket, String>(s, ""));
                             while (true) {
                                 System.out.println("-_-");
-                                if (status.contains("true")) {
+//                                l = allConnection.indexOf(new Pair<Socket, String>(s, ""));
+//                                System.out.println(l);
+                                System.out.println(allConnection.get(l).getRight());
+                                String str_l = (String) allConnection.get(l).getRight();
+                                if (str_l.contains("true")) {
+                                    p.setRight("true");
                                     kirim = kirim.concat("2 oke, " + s.getRemoteSocketAddress() + " ready\r\n");
                                     bos.write(kirim.getBytes());
                                     bos.flush();
-                                    terima = "";
-                                    do {
-                                        buf = is.read();
-                                        terima = terima.concat(String.valueOf((char) buf));
-//                                        System.out.println(terima);
-                                    } while(!terima.contains("\r\n") || buf == 1024);
-                                    if (terima.contains("take")) {
-                                        command = terima.replace("take ", "");
-//                                        System.out.println(command);
-                                        String temp = "";
-                                        do {
-                                            buf = is.read();
-//                                            bytesRead = bis.read(mybytearray, 0, mybytearray.length);
-//                                            cbos.write(mybytearray, 0, bytesRead);
-//                                            System.out.println((char) bytesRead);
-                                            temp = temp.concat(String.valueOf((char) buf));
-                                        } while(!temp.contains("\r\n") || bytesRead == 1024);
-                                        cbos.write(temp.getBytes());
-                                        //cbos.write("\r\n".getBytes());
-                                        cbos.flush();
-                                        kirim = "2 file sent\r\n";
-                                        bos.write(kirim.getBytes());
-                                        bos.flush();
-                                    }
-                                    else {
-                                        break;
-                                    }
-//                                    <transfer mode>
-                                    status = "";
+//                                    terima = "";
+//                                    do {
+//                                        buf = is.read();
+//                                        terima = terima.concat(String.valueOf((char) buf));
+////                                        System.out.println(terima);
+//                                    } while(!terima.contains("\r\n") || buf == 1024);
+//                                    if (terima.contains("take")) {
+//                                        command = terima.replace("take ", "");
+////                                        System.out.println(command);
+//                                        String temp = "";
+//                                        do {
+//                                            buf = is.read();
+////                                            bytesRead = bis.read(mybytearray, 0, mybytearray.length);
+////                                            cbos.write(mybytearray, 0, bytesRead);
+////                                            System.out.println((char) bytesRead);
+//                                            temp = temp.concat(String.valueOf((char) buf));
+//                                        } while(!temp.contains("\r\n") || bytesRead == 1024);
+//                                        cbos.write(temp.getBytes());
+//                                        //cbos.write("\r\n".getBytes());
+//                                        cbos.flush();
+//                                        kirim = "2 file sent\r\n";
+//                                        bos.write(kirim.getBytes());
+//                                        bos.flush();
+//                                    }
+//                                    else {
+//                                        break;
+//                                    }
+////                                    <transfer mode>
+//                                    status = "";
                                     break;
                                 }
-                                else if (status.contains("false")){
+                                else if (str_l.contains("false")){
                                     kirim = kirim.concat("3 !, " + s.getRemoteSocketAddress() + " reject\r\n");
-                                    status = "";
+                                    allConnection.get(l).setRight("");
+//                                    status = "";
                                     bos.write(kirim.getBytes());
                                     bos.flush();
                                     break;
                                 }
                             }
                         }
+                        
+                        while (true) {
+                        terima = "";
+                            do {
+                                buf = is.read();
+                                terima = terima.concat(String.valueOf((char) buf));
+                                System.out.println(terima);
+                            } while(!terima.contains("\r\n") || buf == 1024);
+
+                            if (terima.contains("take")) {
+                                command = terima.replace("take ", "");
+//                                command = command.concat("\r\n");
+                                break;
+                            }
+                        }
+                        
+                        for(Pair p: destination) {
+                            String str = (String) p.getRight();
+                            Socket s = (Socket) p.getLeft();
+                            OutputStream cos = s.getOutputStream();
+                            BufferedOutputStream cbos = new BufferedOutputStream(cos);
+
+                            if (str == "true") {
+                                cbos.write(command.getBytes());
+                                cbos.flush();
+                            }
+                        }
+                        
+                        String temp = "";
+                        do {
+                            buf = is.read();
+                            temp = temp.concat(String.valueOf((char) buf));
+                            for(Pair p: destination) {
+                                String str = (String) p.getRight();
+                                Socket s = (Socket) p.getLeft();
+                                OutputStream cos = s.getOutputStream();
+                                BufferedOutputStream cbos = new BufferedOutputStream(cos);
+
+                                if (str == "true") {
+                                    cbos.write((char) buf);
+                                    cbos.flush();
+                                }
+                                
+                            }
+                        } while(!temp.contains("\r\n") || buf == 1024);
+                        
+                        kirim = "2 file sent\r\n";
+                        bos.write(kirim.getBytes());
+                        bos.flush();
+                        
                         destination.clear();
                         kirim = "2 success :)\r\n";
+                        for(Pair p: allConnection) {
+                            p.setRight("");
+                        }
                     }
                     else if (terima.contains("accept")) {
-                        status = "true";
+                        int l = allConnection.indexOf(new Pair<Socket, String>(connection, ""));
+                        allConnection.get(l).setRight("true");
                         kirim = "2 oke, listen mode\r\n";
                         bos.write(kirim.getBytes());
                         bos.flush();
 //                        <listen mode>
-                        while (status.contains("true")) {
+                        String str_l = (String) allConnection.get(l).getRight();
+                        while (str_l.contains("true")) {
+                            str_l = (String) allConnection.get(l).getRight();  
 //                            do {
 //                                bos.write(temp.getBytes());
 //                            } while(bytesRead == 1024);
 //                            bos.flush();
                             System.out.println("_-_");
                         }
-                        kirim = "2 success :)";
+                        kirim = "2 success :)\r\n";
                     }
                     else if (terima.contains("reject")) {
-                        status = "false";
+                        int l = allConnection.indexOf(new Pair<Socket, String>(connection, ""));
+                        allConnection.get(l).setRight("false");
                         kirim = "2 Oke\r\n";
                     }
                     bos.write(kirim.getBytes());
