@@ -95,10 +95,17 @@ public class Tugas05_server {
                         terima = terima.concat(String.valueOf((char) buf));
                     } while(!terima.contains("\r\n") || buf == 1024);
                     if (terima.contains("who")) {
-                        kirim = "2 oke,\r\n";
-                        for(Pair a: allConnection) {
-                            Socket s = (Socket) a.getLeft();
-                            kirim = kirim.concat("\t" + s.getRemoteSocketAddress().toString() + "\r\n");
+                        if (allConnection.size() > 1) {
+                            kirim = "2 oke,\r\n";
+                            for(Pair a: allConnection) {
+                                Socket s = (Socket) a.getLeft();
+                                if (!connection.equals(s)){
+                                    kirim = kirim.concat("\t" + s.getRemoteSocketAddress().toString() + "\r\n");
+                                }
+                            }
+                        }
+                        else {
+                            kirim = "3 only you :p\r\n";
                         }
                     }
                     else if (terima.contains("send")) {
@@ -263,6 +270,19 @@ public class Tugas05_server {
                         int l = allConnection.indexOf(new Pair<Socket, String>(connection, ""));
                         allConnection.get(l).setRight("false");
                         kirim = "2 Oke\r\n";
+                    }
+                    else if (terima.contains("quit")) {
+                        kirim = "2 Bye ;)";
+                        bos.write(kirim.getBytes());
+                        bos.flush();
+                        int l;
+                        if ((l = allConnection.indexOf(new Pair<Socket, String>(connection, ""))) < 0) {
+                            if ((l = allConnection.indexOf(new Pair<Socket, String>(connection, "false"))) < 0) {
+                                l = allConnection.indexOf(new Pair<Socket, String>(connection, "true"));
+                            }
+                        }
+                        allConnection.remove(l);
+                        connection.close();
                     }
                     bos.write(kirim.getBytes());
                     bos.flush();
