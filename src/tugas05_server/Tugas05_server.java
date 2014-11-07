@@ -5,19 +5,12 @@
  */
 package tugas05_server;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
 /**
@@ -26,10 +19,9 @@ import java.util.ArrayList;
  */
 public class Tugas05_server {
 
-    public final static int PORT = 6060;
-    public final static ArrayList<Pair<Socket, String>> allConnection = new ArrayList<Pair<Socket, String>>();
-    private static byte[] mybytearray = new byte[1024];
-    private static int bytesRead = 0;
+    private final static int PORT = 6060;
+    private final static ArrayList<Pair<Socket, String>> allConnection = new ArrayList<Pair<Socket, String>>();
+    private final static byte[] mybytearray = new byte[1024];
     
     /**
      * @param args the command line arguments
@@ -40,7 +32,6 @@ public class Tugas05_server {
         try (ServerSocket server = new ServerSocket(PORT)) {
             while (true) {
                 try {
-                    int i = 0;
                     Socket connection = server.accept();
                     allConnection.add(new Pair<Socket, String>(connection, ""));
                     Thread task = new ClientHandling(connection);
@@ -60,7 +51,6 @@ public class Tugas05_server {
         private final Socket connection;
         private final InputStream is;
         private final OutputStream os;
-        private BufferedInputStream bis;
         private final BufferedOutputStream bos;
         private String kirim = "";
         private String terima = "";
@@ -75,7 +65,6 @@ public class Tugas05_server {
             this.connection = connection;
             is = connection.getInputStream();
             os = connection.getOutputStream();
-            bis = new BufferedInputStream(is);
             bos = new BufferedOutputStream(os);
         }
         
