@@ -159,7 +159,7 @@ public class Tugas05_server {
                                 } while(!terima.contains("\r\n") || buf == 1024);
 
                                 if (terima.contains("take")) {
-                                    command = terima.replace("take ", "");
+                                    command = terima.replace("take ", "file ");
                                     break;
                                 }
                             }
