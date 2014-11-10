@@ -125,13 +125,13 @@ public class Tugas05_server {
                                 String ckirim = "";
                                 OutputStream cos = s.getOutputStream();
                                 BufferedOutputStream cbos = new BufferedOutputStream(cos);
-                                ckirim = "request send from /ip:port" + this.connection.getRemoteSocketAddress().toString() + ", accept?\r\n";
+                                ckirim = "request send from " + this.connection.getRemoteSocketAddress().toString() + ", accept?\r\n";
                                 cbos.write(ckirim.getBytes());
                                 cbos.flush();
                                 int  l = allConnection.indexOf(new Pair<Socket, String>(s, ""));
                                 while (true) {
                                     System.out.println("-_-");
-                                    System.out.println(allConnection.get(l).getRight());
+//                                    System.out.println(allConnection.get(l).getRight());
                                     String str_l = (String) allConnection.get(l).getRight();
                                     if (str_l.contains("true")) {
                                         p.setRight("true");
@@ -155,7 +155,7 @@ public class Tugas05_server {
                                 do {
                                     buf = is.read();
                                     terima = terima.concat(String.valueOf((char) buf));
-                                    System.out.println(terima);
+//                                    System.out.println(terima);
                                 } while(!terima.contains("\r\n") || buf == 1024);
 
                                 if (terima.contains("take")) {
@@ -197,23 +197,23 @@ public class Tugas05_server {
                             //<file>
                             int bytesRead;
                             do {
-                                bytesRead = is.read(mybytearray, 0, mybytearray.length);
+                                bytesRead = is.read(mybytearray, 0, 1024);
+//                                System.out.println(bytesRead);
                                 for(Pair p: destination) {
                                     String str = (String) p.getRight();
-                                    Socket s = (Socket) p.getLeft();
-                                    OutputStream cos = s.getOutputStream();
-                                    BufferedOutputStream cbos = new BufferedOutputStream(cos);
-
                                     if (str.matches("true") == true) {
+                                        Socket s = (Socket) p.getLeft();
+                                        OutputStream cos = s.getOutputStream();
+                                        BufferedOutputStream cbos = new BufferedOutputStream(cos);
                                         cbos.write(mybytearray, 0, bytesRead);
                                         cbos.flush();
                                     }
                                 }
                             } while(bytesRead == 1024);
 
-                            kirim = "2 file sent\r\n";
-                            bos.write(kirim.getBytes());
-                            bos.flush();
+//                            kirim = "2 file sent\r\n";
+//                            bos.write(kirim.getBytes());
+//                            bos.flush();
 
                             destination.clear();
                             kirim = "2 success :)\r\n";
