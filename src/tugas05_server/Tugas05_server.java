@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class Tugas05_server {
 
     private final static int PORT = 6060;
-    private final static ArrayList<Pair<Socket, String>> allConnection = new ArrayList<Pair<Socket, String>>();
+    private final static ArrayList<Pair<Socket, String>> allConnection = new ArrayList<>();
     private final static byte[] mybytearray = new byte[1024];
     
     /**
@@ -33,7 +33,7 @@ public class Tugas05_server {
             while (true) {
                 try {
                     Socket connection = server.accept();
-                    allConnection.add(new Pair<Socket, String>(connection, ""));
+                    allConnection.add(new Pair<>(connection, ""));
                     Thread task = new ClientHandling(connection);
                     task.start();
                 }
@@ -56,7 +56,7 @@ public class Tugas05_server {
         private String terima = "";
         private int buf;
         private String command = "";
-        private ArrayList<Pair<Socket, String>> destination = new ArrayList<Pair<Socket, String>>();
+        private final ArrayList<Pair<Socket, String>> destination = new ArrayList<>();
         private boolean who = false;
         private boolean send = false;
 //        private String[] activeDest;
@@ -114,7 +114,7 @@ public class Tugas05_server {
                             for(Pair a: allConnection) {
                                 Socket s = (Socket) a.getLeft();
                                 if (terima.contains(s.getRemoteSocketAddress().toString())) {
-                                    Pair<Socket, String> pair = new Pair<Socket, String>(s, "false");
+                                    Pair<Socket, String> pair = new Pair<>(s, "false");
                                     destination.add(pair);
                                 }
                             }
@@ -128,7 +128,7 @@ public class Tugas05_server {
                                 ckirim = "request send from " + this.connection.getRemoteSocketAddress().toString() + ", accept?\r\n";
                                 cbos.write(ckirim.getBytes());
                                 cbos.flush();
-                                int  l = allConnection.indexOf(new Pair<Socket, String>(s, ""));
+                                int  l = allConnection.indexOf(new Pair<>(s, ""));
                                 while (true) {
                                     System.out.println("-_-");
 //                                    System.out.println(allConnection.get(l).getRight());
@@ -225,7 +225,7 @@ public class Tugas05_server {
                         send = false;
                     }
                     else if (terima.contains("accept")) {
-                        int l = allConnection.indexOf(new Pair<Socket, String>(connection, ""));
+                        int l = allConnection.indexOf(new Pair<>(connection, ""));
                         allConnection.get(l).setRight("true");
                         kirim = "2 oke, listen mode\r\n";
                         bos.write(kirim.getBytes());
@@ -239,18 +239,18 @@ public class Tugas05_server {
                         kirim = "2 success :)\r\n";
                     }
                     else if (terima.contains("reject")) {
-                        int l = allConnection.indexOf(new Pair<Socket, String>(connection, ""));
+                        int l = allConnection.indexOf(new Pair<>(connection, ""));
                         allConnection.get(l).setRight("false");
-                        kirim = "2 Oke\r\n";
+                        kirim = "2 oke\r\n";
                     }
                     else if (terima.contains("quit")) {
-                        kirim = "2 Bye ;)";
+                        kirim = "2 bye ;)";
                         bos.write(kirim.getBytes());
                         bos.flush();
                         int l;
-                        if ((l = allConnection.indexOf(new Pair<Socket, String>(connection, ""))) < 0) {
-                            if ((l = allConnection.indexOf(new Pair<Socket, String>(connection, "false"))) < 0) {
-                                l = allConnection.indexOf(new Pair<Socket, String>(connection, "true"));
+                        if ((l = allConnection.indexOf(new Pair<>(connection, ""))) < 0) {
+                            if ((l = allConnection.indexOf(new Pair<>(connection, "false"))) < 0) {
+                                l = allConnection.indexOf(new Pair<>(connection, "true"));
                             }
                         }
                         allConnection.remove(l);
