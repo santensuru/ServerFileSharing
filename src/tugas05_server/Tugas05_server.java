@@ -15,7 +15,15 @@ import java.util.ArrayList;
 
 /**
  *
- * @author user
+ * @author
+ * 1. Djuned Fernando Djusdek   5112100071
+ * 2. M. Arief Ridwan           5112100097
+ * 3. I Gede Arya Putra Perdana 5112100151
+ * 
+ * https://github.com/santensuru/ServerFileSharing
+ * email: djuned.ong@gmail.com
+ * 
+ * version 0.0.1h beta
  */
 public class Tugas05_server {
 
