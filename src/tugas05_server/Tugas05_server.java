@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * https://github.com/santensuru/ServerFileSharing
  * email: djuned.ong@gmail.com
  * 
- * version 0.0.1h beta
+ * version 0.0.1j beta
  */
 public class Tugas05_server {
 
@@ -92,7 +92,7 @@ public class Tugas05_server {
                     do {
                         buf = is.read();
                         terima = terima.concat(String.valueOf((char) buf));
-                    } while(!terima.contains("\r\n") || buf == 1024);
+                    } while(!terima.contains("\r\n"));
                     if (terima.contains("who")) {
                         if (allConnection.size() > 1) {
                             kirim = "2 oke,\r\n";
@@ -164,7 +164,7 @@ public class Tugas05_server {
                                     buf = is.read();
                                     terima = terima.concat(String.valueOf((char) buf));
 //                                    System.out.println(terima);
-                                } while(!terima.contains("\r\n") || buf == 1024);
+                                } while(!terima.contains("\r\n"));
 
                                 if (terima.contains("take")) {
                                     command = terima.replace("take ", "file ");
@@ -200,7 +200,7 @@ public class Tugas05_server {
 //                                        cbos.flush();
 //                                    }
 //                                }
-//                            } while(!temp.contains("\r\n") || buf == 1024);
+//                            } while(!temp.contains("\r\n"));
                             
                             //<file>
                             int bytesRead;
