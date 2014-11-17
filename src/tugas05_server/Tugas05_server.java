@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * https://github.com/santensuru/ServerFileSharing
  * email: djuned.ong@gmail.com
  * 
- * version 0.0.1k beta
+ * version 0.0.1l beta
  */
 public class Tugas05_server {
 
@@ -138,7 +138,7 @@ public class Tugas05_server {
                                 cbos.flush();
                                 int  l = allConnection.indexOf(new Pair<>(s, ""));
                                 while (true) {
-                                    System.out.println("-_-");
+//                                    System.out.println("-_-");
 //                                    System.out.println(allConnection.get(l).getRight());
                                     String str_l = (String) allConnection.get(l).getRight();
                                     if (str_l.contains("true")) {
@@ -159,7 +159,7 @@ public class Tugas05_server {
                             }
 
                             while (true) {
-                            terima = "";
+                                terima = "";
                                 do {
                                     buf = is.read();
                                     terima = terima.concat(String.valueOf((char) buf));
@@ -171,7 +171,7 @@ public class Tugas05_server {
                                     break;
                                 }
                             }
-
+                            
                             for(Pair p: destination) {
                                 String str = (String) p.getRight();
                                 Socket s = (Socket) p.getLeft();
@@ -183,6 +183,28 @@ public class Tugas05_server {
                                     cbos.flush();
                                 }
                             }
+                            
+//                            while (true) {
+                                terima = "";
+                                do {
+                                    buf = is.read();
+                                    terima = terima.concat(String.valueOf((char) buf));
+                                } while(!terima.contains("\r\n"));
+//                                break;
+//                            }
+
+                            for(Pair p: destination) {
+                                String str = (String) p.getRight();
+                                Socket s = (Socket) p.getLeft();
+                                OutputStream cos = s.getOutputStream();
+                                BufferedOutputStream cbos = new BufferedOutputStream(cos);
+
+                                if (str.matches("true") == true) {
+                                    cbos.write(terima.getBytes());
+                                    cbos.flush();
+                                }
+                            }
+                            terima = terima.replace("\r\n", "");
 
 //                            String temp = "";
 //                            //<listen mode>
@@ -204,9 +226,11 @@ public class Tugas05_server {
                             
                             //<file>
                             int bytesRead;
+                            int flag = 0;
                             do {
                                 bytesRead = is.read(mybytearray, 0, 4096);
-//                                System.out.println(bytesRead);
+                                flag += bytesRead;
+                                System.out.println(bytesRead + " " + flag + "/" + terima);
                                 for(Pair p: destination) {
                                     String str = (String) p.getRight();
                                     if (str.matches("true") == true) {
@@ -217,7 +241,7 @@ public class Tugas05_server {
                                         cbos.flush();
                                     }
                                 }
-                            } while(bytesRead == 4096);
+                            } while(bytesRead == 4096 || !String.valueOf(flag).equals(terima));
 
 //                            kirim = "2 file sent\r\n";
 //                            bos.write(kirim.getBytes());
@@ -242,7 +266,7 @@ public class Tugas05_server {
                         String str_l = (String) allConnection.get(l).getRight();
                         while (str_l.contains("true")) {
                             str_l = (String) allConnection.get(l).getRight();  
-                            System.out.println("_-_");
+//                            System.out.println("_-_");
                         }
                         kirim = "2 success :)\r\n";
                     }
