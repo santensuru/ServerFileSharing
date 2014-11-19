@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * https://github.com/santensuru/ServerFileSharing
  * email: djuned.ong@gmail.com
  * 
- * version 0.0.1l beta
+ * version 0.0.1m beta
  */
 public class Tugas05_server {
 
@@ -126,6 +126,15 @@ public class Tugas05_server {
                                     destination.add(pair);
                                 }
                             }
+                            
+                            if (destination.size() == 0) {
+                                kirim = "3 destination not found. (look ip:port)\r\n";
+                                bos.write(kirim.getBytes());
+                                bos.flush();
+                                continue;
+                            }
+                            
+                            int counter = 0;
 
                             kirim = "";
                             for(Pair p: destination) {
@@ -138,7 +147,7 @@ public class Tugas05_server {
                                 cbos.flush();
                                 int  l = allConnection.indexOf(new Pair<>(s, ""));
                                 while (true) {
-//                                    System.out.println("-_-");
+                                    System.out.println("-_-");
 //                                    System.out.println(allConnection.get(l).getRight());
                                     String str_l = (String) allConnection.get(l).getRight();
                                     if (str_l.contains("true")) {
@@ -153,9 +162,20 @@ public class Tugas05_server {
                                         allConnection.get(l).setRight("");
                                         bos.write(kirim.getBytes());
                                         bos.flush();
+                                        counter++;
                                         break;
                                     }
                                 }
+                            }
+                            
+                            if (destination.size() == counter) {
+                                destination.clear();
+                                who = false;
+                                send = false;
+                                kirim = "3 all destination reject.\r\n";
+                                bos.write(kirim.getBytes());
+                                bos.flush();
+                                continue;
                             }
 
                             while (true) {
@@ -169,6 +189,11 @@ public class Tugas05_server {
                                 if (terima.contains("take")) {
                                     command = terima.replace("take ", "file ");
                                     break;
+                                }
+                                else {
+                                    kirim = "3 command not allow. (take)\r\n";
+                                    bos.write(kirim.getBytes());
+                                    bos.flush();
                                 }
                             }
                             
@@ -230,7 +255,7 @@ public class Tugas05_server {
                             do {
                                 bytesRead = is.read(mybytearray, 0, 4096);
                                 flag += bytesRead;
-                                System.out.println(bytesRead + " " + flag + "/" + terima);
+//                                System.out.println(bytesRead + " " + flag + "/" + terima);
                                 for(Pair p: destination) {
                                     String str = (String) p.getRight();
                                     if (str.matches("true") == true) {
@@ -266,7 +291,7 @@ public class Tugas05_server {
                         String str_l = (String) allConnection.get(l).getRight();
                         while (str_l.contains("true")) {
                             str_l = (String) allConnection.get(l).getRight();  
-//                            System.out.println("_-_");
+                            System.out.println("_-_");
                         }
                         kirim = "2 success :)\r\n";
                     }
@@ -276,7 +301,7 @@ public class Tugas05_server {
                         kirim = "2 oke\r\n";
                     }
                     else if (terima.contains("quit")) {
-                        kirim = "2 bye ;)";
+                        kirim = "2 bye ;)\r\n";
                         bos.write(kirim.getBytes());
                         bos.flush();
                         int l;
@@ -287,6 +312,9 @@ public class Tugas05_server {
                         }
                         allConnection.remove(l);
                         break;
+                    }
+                    else {
+                        kirim = "3 command not allow. (who, send, /<ip>:<port>)\r\n";
                     }
                     bos.write(kirim.getBytes());
                     bos.flush();
