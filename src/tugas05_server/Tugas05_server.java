@@ -23,13 +23,13 @@ import java.util.ArrayList;
  * https://github.com/santensuru/ServerFileSharing
  * email: djuned.ong@gmail.com
  * 
- * version 0.0.1n beta
+ * version 0.0.2 beta
  */
 public class Tugas05_server {
 
     private final static int PORT = 6060;
     private final static ArrayList<Pair<Socket, String>> allConnection = new ArrayList<>();
-    private final static byte[] mybytearray = new byte[4096];
+    private final static byte[] mybytearray = new byte[16384]; //4096
     
     /**
      * @param args the command line arguments
@@ -253,7 +253,7 @@ public class Tugas05_server {
                             int bytesRead;
                             int flag = 0;
                             do {
-                                bytesRead = is.read(mybytearray, 0, 4096);
+                                bytesRead = is.read(mybytearray, 0, 16384);
                                 flag += bytesRead;
 //                                System.out.println(bytesRead + " " + flag + "/" + terima);
                                 for(Pair p: destination) {
@@ -266,7 +266,7 @@ public class Tugas05_server {
                                         cbos.flush();
                                     }
                                 }
-                            } while(bytesRead == 4096 || !String.valueOf(flag).equals(terima));
+                            } while(bytesRead == 16384 || !String.valueOf(flag).equals(terima));
 
 //                            kirim = "2 file sent\r\n";
 //                            bos.write(kirim.getBytes());
