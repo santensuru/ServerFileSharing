@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * https://github.com/santensuru/ServerFileSharing
  * email: djuned.ong@gmail.com
  * 
- * version 0.0.1m beta
+ * version 0.0.1n beta
  */
 public class Tugas05_server {
 
@@ -121,7 +121,7 @@ public class Tugas05_server {
                         if (who == true && send == true) {
                             for(Pair a: allConnection) {
                                 Socket s = (Socket) a.getLeft();
-                                if (terima.contains(s.getRemoteSocketAddress().toString())) {
+                                if (terima.contains(s.getRemoteSocketAddress().toString()) && !s.equals(connection)) {
                                     Pair<Socket, String> pair = new Pair<>(s, "false");
                                     destination.add(pair);
                                 }
