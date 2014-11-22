@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * https://github.com/santensuru/ServerFileSharing
  * email: djuned.ong@gmail.com
  * 
- * version 0.0.2a beta
+ * version 0.0.2b beta
  */
 public class Tugas05_server {
 
@@ -121,14 +121,15 @@ public class Tugas05_server {
                         if (who == true && send == true) {
                             for(Pair a: allConnection) {
                                 Socket s = (Socket) a.getLeft();
-                                if (terima.contains(s.getRemoteSocketAddress().toString()) && !s.equals(connection)) {
+                                String str = (String) a.getRight();
+                                if (terima.contains(s.getRemoteSocketAddress().toString()) && str.equals("") && !s.equals(connection)) {
                                     Pair<Socket, String> pair = new Pair<>(s, "false");
                                     destination.add(pair);
                                 }
                             }
                             
                             if (destination.size() == 0) {
-                                kirim = "3 destination not found. (look ip:port)\r\n";
+                                kirim = "3 destination not found or used. (look ip:port)\r\n";
                                 bos.write(kirim.getBytes());
                                 bos.flush();
                                 continue;
