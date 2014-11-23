@@ -15,7 +15,9 @@ package tugas05_server;
  * https://github.com/santensuru/ServerFileSharing
  * email: djuned.ong@gmail.com
  * 
- * version 0.0.1h beta
+ * version 0.0.2b beta
+ * @param <L>
+ * @param <R>
  */
 public class Pair<L,R> {
     private final L left;

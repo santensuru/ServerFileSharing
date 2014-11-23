@@ -96,12 +96,9 @@ public class Tugas05_server {
                     if (terima.contains("who")) {
                         if (allConnection.size() > 1) {
                             kirim = "2 oke,\r\n";
-                            for(Pair a: allConnection) {
-                                Socket s = (Socket) a.getLeft();
-                                if (!connection.equals(s)){
-                                    kirim = kirim.concat("\t" + s.getRemoteSocketAddress().toString() + "\r\n");
-                                }
-                            }
+                            allConnection.stream().map((a) -> (Socket) a.getLeft()).filter((s) -> (!connection.equals(s))).forEach((s) -> {
+                                kirim = kirim.concat("\t" + s.getRemoteSocketAddress().toString() + "\r\n");
+                            });
                             who = true;
                         }
                         else {
@@ -119,16 +116,16 @@ public class Tugas05_server {
                     }
                     else if (terima.contains("/")) {
                         if (who == true && send == true) {
-                            for(Pair a: allConnection) {
+                            allConnection.stream().forEach((a) -> {
                                 Socket s = (Socket) a.getLeft();
                                 String str = (String) a.getRight();
                                 if (terima.contains(s.getRemoteSocketAddress().toString()) && str.equals("") && !s.equals(connection)) {
                                     Pair<Socket, String> pair = new Pair<>(s, "false");
                                     destination.add(pair);
                                 }
-                            }
+                            });
                             
-                            if (destination.size() == 0) {
+                            if (destination.isEmpty()) {
                                 kirim = "3 destination not found or used. (look ip:port)\r\n";
                                 bos.write(kirim.getBytes());
                                 bos.flush();
@@ -140,7 +137,7 @@ public class Tugas05_server {
                             kirim = "";
                             for(Pair p: destination) {
                                 Socket s = (Socket) p.getLeft();
-                                String ckirim = "";
+                                String ckirim;
                                 OutputStream cos = s.getOutputStream();
                                 BufferedOutputStream cbos = new BufferedOutputStream(cos);
                                 ckirim = "request send from " + this.connection.getRemoteSocketAddress().toString() + ", accept?\r\n";
@@ -275,9 +272,9 @@ public class Tugas05_server {
 
                             destination.clear();
                             kirim = "2 success :)\r\n";
-                            for(Pair p: allConnection) {
+                            allConnection.stream().forEach((p) -> {
                                 p.setRight("");
-                            }
+                            });
                         }
                         who = false;
                         send = false;
